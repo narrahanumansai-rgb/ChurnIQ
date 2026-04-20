@@ -1,4 +1,4 @@
-const API_ENDPOINT = "https://2slvta5ine2l6r2f7m7a44rxdm0mhnol.lambda-url.us-east-1.on.aws/";
+const API_ENDPOINT = "https://2slvta5ine2l6r2f7m7a44rxdm0mhnol.lambda-url.us-east-1.on.aws";
 
 const SECTION_ORDER = ["section-demographic", "section-services", "section-billing"];
 
