@@ -18,9 +18,6 @@ env/
 # Environment variables (keep .env.example, ignore real .env)
 .env
 
-# Model artefacts (large binary files — store in S3 or DVC, not Git)
-models/*.pkl
-
 # Docker
 .dockerignore
 
