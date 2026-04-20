@@ -1,13 +1,13 @@
-const API_ENDPOINT = "http://localhost:8000";
+const API_ENDPOINT = "https://2slvta5ine2l6r2f7m7a44rxdm0mhnol.lambda-url.us-east-1.on.aws/";
 
 const SECTION_ORDER = ["section-demographic", "section-services", "section-billing"];
 
 const INTERNET_DEPENDENT = ["OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"];
 
-const form       = document.getElementById("churnForm");
+const form = document.getElementById("churnForm");
 const resultCard = document.getElementById("resultCard");
-const submitBtn  = document.getElementById("submitBtn");
-const resetBtn   = document.getElementById("resetBtn");
+const submitBtn = document.getElementById("submitBtn");
+const resetBtn = document.getElementById("resetBtn");
 const errorToast = document.getElementById("errorToast");
 
 let currentSection = SECTION_ORDER[0];
@@ -20,7 +20,7 @@ function getEl(id) {
 // ── Auto-calculation logic ─────────────────────────────────────
 
 function recalcTotalCharges() {
-  const tenure  = parseFloat(getEl("tenure").value)  || 0;
+  const tenure = parseFloat(getEl("tenure").value) || 0;
   const monthly = parseFloat(getEl("MonthlyCharges").value) || 0;
   const totalEl = getEl("TotalCharges");
   if (tenure > 0 && monthly > 0 && !totalEl.dataset.manuallyEdited) {
@@ -31,9 +31,9 @@ function recalcTotalCharges() {
 
 function syncPhoneDependents() {
   const noPhone = getEl("PhoneService").value === "No";
-  const ml      = getEl("MultipleLines");
+  const ml = getEl("MultipleLines");
   if (noPhone) {
-    ml.value    = "No phone service";
+    ml.value = "No phone service";
     ml.disabled = true;
     ml.closest(".field-group").classList.add("auto-locked");
   } else {
@@ -48,7 +48,7 @@ function syncInternetDependents() {
   INTERNET_DEPENDENT.forEach((id) => {
     const el = getEl(id);
     if (noInternet) {
-      el.value    = "No internet service";
+      el.value = "No internet service";
       el.disabled = true;
       el.closest(".field-group").classList.add("auto-locked");
     } else {
@@ -99,7 +99,7 @@ function updateStepIndicators(activeSectionId) {
   const activeIdx = SECTION_ORDER.indexOf(activeSectionId);
   document.querySelectorAll(".step").forEach((el, i) => {
     el.classList.remove("active", "done");
-    if (i < activeIdx)        el.classList.add("done");
+    if (i < activeIdx) el.classList.add("done");
     else if (i === activeIdx) el.classList.add("active");
   });
 }
@@ -127,25 +127,25 @@ function buildPayload() {
   const num = (id) => parseInt(val(id), 10);
   const flt = (id) => parseFloat(val(id));
   return {
-    gender:           val("gender"),
-    SeniorCitizen:    num("SeniorCitizen"),
-    Partner:          val("Partner"),
-    Dependents:       val("Dependents"),
-    tenure:           num("tenure"),
-    PhoneService:     val("PhoneService"),
-    MultipleLines:    val("MultipleLines"),
-    InternetService:  val("InternetService"),
-    OnlineSecurity:   val("OnlineSecurity"),
-    OnlineBackup:     val("OnlineBackup"),
+    gender: val("gender"),
+    SeniorCitizen: num("SeniorCitizen"),
+    Partner: val("Partner"),
+    Dependents: val("Dependents"),
+    tenure: num("tenure"),
+    PhoneService: val("PhoneService"),
+    MultipleLines: val("MultipleLines"),
+    InternetService: val("InternetService"),
+    OnlineSecurity: val("OnlineSecurity"),
+    OnlineBackup: val("OnlineBackup"),
     DeviceProtection: val("DeviceProtection"),
-    TechSupport:      val("TechSupport"),
-    StreamingTV:      val("StreamingTV"),
-    StreamingMovies:  val("StreamingMovies"),
-    Contract:         val("Contract"),
+    TechSupport: val("TechSupport"),
+    StreamingTV: val("StreamingTV"),
+    StreamingMovies: val("StreamingMovies"),
+    Contract: val("Contract"),
     PaperlessBilling: val("PaperlessBilling"),
-    PaymentMethod:    val("PaymentMethod"),
-    MonthlyCharges:   flt("MonthlyCharges"),
-    TotalCharges:     flt("TotalCharges"),
+    PaymentMethod: val("PaymentMethod"),
+    MonthlyCharges: flt("MonthlyCharges"),
+    TotalCharges: flt("TotalCharges"),
   };
 }
 
@@ -165,9 +165,9 @@ function showToast(message) {
 
 function animateNumber(el, from, to, duration) {
   const start = performance.now();
-  const tick  = (now) => {
+  const tick = (now) => {
     const progress = Math.min((now - start) / duration, 1);
-    const eased    = 1 - Math.pow(1 - progress, 3);
+    const eased = 1 - Math.pow(1 - progress, 3);
     el.textContent = `${(from + (to - from) * eased).toFixed(1)}%`;
     if (progress < 1) requestAnimationFrame(tick);
   };
@@ -178,7 +178,7 @@ function animateNumber(el, from, to, duration) {
 
 function renderResult(result) {
   const isChurn = result.churn_prediction === "Yes";
-  const prob    = result.churn_probability;
+  const prob = result.churn_probability;
 
   resultCard.classList.remove("is-churn", "is-safe", "hidden");
   resultCard.classList.add(isChurn ? "is-churn" : "is-safe");
@@ -189,12 +189,12 @@ function renderResult(result) {
     : '<i class="bi bi-shield-fill-check"></i>';
 
   getEl("predictionText").textContent = isChurn ? "High Risk of Churn" : "Customer is Safe";
-  getEl("riskTag").textContent        = result.risk_label;
+  getEl("riskTag").textContent = result.risk_label;
 
   const gaugeFill = getEl("gaugeFill");
-  const probText  = getEl("probabilityText");
+  const probText = getEl("probabilityText");
   gaugeFill.style.width = "0%";
-  probText.textContent  = "0%";
+  probText.textContent = "0%";
 
   requestAnimationFrame(() => {
     setTimeout(() => {
@@ -252,9 +252,9 @@ form.addEventListener("submit", async (e) => {
 
   try {
     const response = await fetch(`${API_ENDPOINT}/predict`, {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify(buildPayload()),
+      body: JSON.stringify(buildPayload()),
     });
 
     if (!response.ok) {
